@@ -1,0 +1,50 @@
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace KioscoAPI.Models
+    {
+        public class Venta
+        {
+        [Key]
+            public int id{get; set;}
+            public DateTime fecha {get; set;}
+            public decimal total {get; set;}
+            public string tipo_venta{get; set;}
+            public decimal saldo_pendiente{get; set;}
+            public DateTime? fecha_pago_pactado{get; set;}
+        public string? observaciones { get; set; } // Observaciones de la venta, opcional
+        public string? estado { get; set; } // Estado de la venta (Ej: "Pendiente", "Pagada", "Cancelada")
+                                            // FK a Cliente
+        public int? id_cliente { get; set; }
+        [ForeignKey("id_cliente")]
+        public Cliente? Cliente { get; set; }
+        // FK a Usuario
+        public int id_usuario { get; set; }
+        [ForeignKey("id_usuario")]      
+        public Usuario Usuario { get; set; }
+        // Colección de detalles de venta
+        public ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
+        public ICollection<PagoFiado> PagosFiado { get; set; } = new List<PagoFiado>();
+        public Ticket Ticket { get; set; } // Relación 1 a 1 con Ticket
+
+
+
+
+
+        // Constructor por defecto
+
+
+        //POSIBLE CAMBIO A MEJORAR
+        /* public Venta()
+        {
+            fecha = DateTime.Now;
+            total = 0;
+            saldo_pendiente = 0;
+            tipo_venta = "Contado"; // Valor por defecto
+        ;
+            */
+
+    }
+}
