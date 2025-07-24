@@ -19,7 +19,10 @@ namespace KioscoAPI.Models
     public string? tipo_cliente { get; set; } //Cuesta pagar o paga altoque
     
 
-    public ICollection<PagoFiado> PagosFiado { get; set; } = new List<PagoFiado>();    
+    public ICollection<PagoFiado> PagosFiado { get; set; } = new List<PagoFiado>();
+        
+
+            
 
 
 

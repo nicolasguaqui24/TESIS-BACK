@@ -23,8 +23,11 @@ namespace KioscoAPI.Repositories
         {
             await _context.Usuarios.AddAsync(usuario);
         }
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
 
-       
         /* public async Task<UsuarioProfileDTO> GetBasicProfileByIdAsync(int userId)
          {
              return await _context.Usuarios

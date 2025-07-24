@@ -1,6 +1,7 @@
 using KioscoAPI;
 using KioscoAPI.Data;
 using KioscoAPI.Repositories;
+using KioscoAPI.Repositories.Interfaces;
 using KioscoAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -57,15 +58,26 @@ builder.Services.AddDbContext<KioscoDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KioscoConnection")));
 //Registramos repositorios
 
+// Registro de Repositorios
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IVentaRepository, VentaRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IProveedoreRepository, ProveedoreRepository>();
 
+// Registro de Servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<VentaService>();  // Aquí deberías cambiar para que tenga interfaz, ej: IVentaService
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<IProveedoreService, ProveedoreService>();
+
 // Configuración de CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         policy => policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "http://localhost:5187")
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });

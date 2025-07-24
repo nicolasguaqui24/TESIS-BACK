@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KioscoAPI.Models
 {
@@ -7,10 +8,14 @@ namespace KioscoAPI.Models
         public int id {get; set;}
         public string nombre{get; set;}
         public string descripcion{get; set;}
+
+        [Required]
+        [Range(0.01, 1000000, ErrorMessage = "El precio debe ser mayor a 0 y menor a 1 millón.")]
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal precio {get; set;}
         public int stock {get; set;}
         public int stock_minimo {get; set;}
-        public int codigo_barra{get; set;}
+        public long codigo_barra{get; set;}
         public bool estado{get; set;}
 
         // FK a Categoria

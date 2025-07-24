@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using KioscoAPI.Repositories;
 using KioscoAPI.Services;
-
+using KioscoAPI.DTOs;
 
 namespace KioscoAPI.Controllers
 {
@@ -48,29 +48,15 @@ namespace KioscoAPI.Controllers
             });
         } 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
-        {
-            if (string.IsNullOrEmpty(request.Usuario) || string.IsNullOrEmpty(request.Password))
-                return BadRequest(new { mensaje = "Usuario y contraseña son obligatorios." });
+public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+{
+    var (exito, mensaje) = await _authService.RegistrarUsuarioAsync(request);
 
-            var existente = await _usuarioRepository.GetByUsuarioAsync(request.Usuario);
-            if (existente != null)
-                return BadRequest(new { mensaje = "Ya existe un usuario con ese nombre de usuario." });
+    if (!exito)
+        return BadRequest(new { mensaje });
 
-            var usuario = new Usuario
-            {
-                nombre = request.Nombre,
-                usuario = request.Usuario,
-                rol = request.Rol,
-                password_hash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                activo = true
-            };
-
-            await _usuarioRepository.CrearAsync(usuario);
-            await _usuarioRepository.SaveAsync();
-
-            return Ok(new { mensaje = "Usuario registrado correctamente." });
-        }
+    return Ok(new { mensaje });
+}
     }
     
 }

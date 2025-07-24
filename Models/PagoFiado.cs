@@ -19,6 +19,12 @@ namespace KioscoAPI.Models
         public int id_cliente { get; set; }
         [ForeignKey("id_cliente")]
         public Cliente Cliente { get; set; }
+
+        //Fk a Cuenta
+        public int id_cuenta { get; set; }
+        [ForeignKey("id_cuenta")]
+        public Cuenta Cuenta { get; set; }
+
         //POSIBLE CAMBIO A MEJORAR
         /*
         // FK a Usuario

@@ -24,7 +24,13 @@ namespace KioscoAPI.Models
         public int id_usuario { get; set; }
         [ForeignKey("id_usuario")]      
         public Usuario Usuario { get; set; }
+        //FK a Cuenta   
+        public int? id_cuenta { get; set; }
+        [ForeignKey("id_cuenta")]
+        public Cuenta? Cuenta { get; set; } // Relación opcional con Cuenta, puede ser nula si no se usa cuenta
+
         // Colección de detalles de venta
+
         public ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
         public ICollection<PagoFiado> PagosFiado { get; set; } = new List<PagoFiado>();
         public Ticket Ticket { get; set; } // Relación 1 a 1 con Ticket

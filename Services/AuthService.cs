@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using KioscoAPI.DTOs;
 
 namespace KioscoAPI { 
 public class AuthService : IAuthService
@@ -53,8 +54,30 @@ public class AuthService : IAuthService
 
         return GenerateJwtToken(user);
     }
+        public async Task<(bool Exito, string Mensaje)> RegistrarUsuarioAsync(RegisterRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Usuario) || string.IsNullOrEmpty(request.Password))
+                return (false, "Usuario y contraseña son obligatorios.");
 
-    private string GenerateJwtToken(Usuario user)
+            var existente = await _usuarioRepository.GetByUsuarioAsync(request.Usuario);
+            if (existente != null)
+                return (false, "Ya existe un usuario con ese nombre de usuario.");
+
+            var usuario = new Usuario
+            {
+                nombre = request.Nombre,
+                usuario = request.Usuario,
+                rol = request.Rol,
+                password_hash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                activo = true
+            };
+
+            await _usuarioRepository.CrearAsync(usuario);
+            await _usuarioRepository.SaveAsync();
+
+            return (true, "Usuario registrado correctamente.");
+        }
+        private string GenerateJwtToken(Usuario user)
         {
             var claims = new[]
             {

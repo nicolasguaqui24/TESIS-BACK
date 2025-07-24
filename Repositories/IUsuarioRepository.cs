@@ -9,6 +9,7 @@ namespace KioscoAPI.Repositories
         Task<Usuario?> GetByUsuarioAsync(string usuario);
         Task<UsuarioProfileDTO> GetBasicProfileByIdAsync(int userId);
         Task CrearAsync(Usuario usuario);
-        
+        Task SaveAsync();
+
     }
 }
