@@ -10,7 +10,7 @@ namespace KioscoAPI.Models
         public decimal precio {get; set;}
         public int stock {get; set;}
         public int stock_minimo {get; set;}
-        public int codigo_barra{get; set;}
+        public long codigo_barra{get; set;}
         public bool estado{get; set;}
 
         // FK a Categoria

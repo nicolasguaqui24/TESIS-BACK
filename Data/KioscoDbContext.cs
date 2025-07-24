@@ -22,6 +22,8 @@ namespace KioscoAPI.Data
         public DbSet<DetalleVenta> DetallesVenta { get; set; }
         public DbSet<PagoFiado> PagosFiado { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Cuenta> Cuentas { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +93,10 @@ namespace KioscoAPI.Data
                 .WithMany(v => v.PagosFiado)
                 .HasForeignKey(pf => pf.id_venta)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cuenta>()
+              .Property(c => c.Saldo)
+             .HasPrecision(18, 2); 
         }
 
     }

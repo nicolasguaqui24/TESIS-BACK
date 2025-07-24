@@ -1,6 +1,7 @@
-using KioscoAPI;
+ï»¿using KioscoAPI;
 using KioscoAPI.Data;
 using KioscoAPI.Repositories;
+using KioscoAPI.Repositories.Interfaces;
 using KioscoAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -22,10 +23,10 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "BILLETERA VIRTUAL - DigitalArs",
         Version = "v1",
-        Description = "Gestión de usuarios, cuentas, movimientos, permisos"
+        Description = "Gestiï¿½n de usuarios, cuentas, movimientos, permisos"
     });
 
-    // Configuración de seguridad para que Swagger pueda enviar el Bearer token
+    // Configuraciï¿½n de seguridad para que Swagger pueda enviar el Bearer token
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -57,41 +58,52 @@ builder.Services.AddDbContext<KioscoDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KioscoConnection")));
 //Registramos repositorios
 
+// Registro de Repositorios
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IVentaRepository, VentaRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IProveedoreRepository, ProveedoreRepository>();
 
+// Registro de Servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
-// Configuración de CORS
+builder.Services.AddScoped<VentaService>();  // Aquï¿½ deberï¿½as cambiar para que tenga interfaz, ej: IVentaService
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<IProveedoreService, ProveedoreService>();
+
+// Configuraciï¿½n de CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         policy => policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "http://localhost:5187")
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
 
-// Leer configuración JWT
+// Leer configuraciï¿½n JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
-// Agregar autenticación JWT
+// Agregar autenticaciï¿½n JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
     .AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+    });
 
 
 var app = builder.Build();
@@ -111,4 +123,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();  
+app.Run();
