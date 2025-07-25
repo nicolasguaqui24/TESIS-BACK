@@ -3,7 +3,7 @@
 namespace KioscoAPI.Models
 {
     public class PrecioProducto
-    {
+    { //decimal totalAjustado = detalle.Cantidad * producto.PrecioActual; (Esta es la formula para obtener el actualizado de precio)
         public int id { get; set; }
         public DateTime fecha_desde { get; set; }
         public decimal precio { get; set; }

@@ -15,7 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 //Servicios
-builder.Services.AddControllers();
+//Esto hará que el serializador detecte ciclos y los maneje automáticamente.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -61,16 +66,22 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("KioscoConnection
 // Registro de Repositorios
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IVentaRepository, VentaRepository>();
+
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<IProveedoreRepository, ProveedoreRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+//builder.Services.AddScoped<IClienteService, ClienteService>();
 
 // Registro de Servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<VentaService>();  // Aqu� deber�as cambiar para que tenga interfaz, ej: IVentaService
+builder.Services.AddScoped<VentaService, VentaService>();  // Aqu� deber�as cambiar para que tenga interfaz, ej: IVentaService
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IProveedoreService, ProveedoreService>();
+//builder.Services.AddScoped<IClienteService, ClienteService>();
+
+
 
 // Configuraci�n de CORS
 builder.Services.AddCors(options =>

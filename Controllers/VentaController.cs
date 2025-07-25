@@ -27,6 +27,7 @@ namespace KioscoAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CrearVenta([FromBody] VentaDTO dto)
         {
+            Console.WriteLine($"POST CrearVenta recibido a las {DateTime.Now}");
             var venta = await _service.CrearVentaDesdeDTOAsync(dto);
             return CreatedAtAction(nameof(ObtenerPorId), new { id = venta.id }, venta);
         }

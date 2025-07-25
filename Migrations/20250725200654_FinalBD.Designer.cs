@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KioscoAPI.Migrations
 {
     [DbContext(typeof(KioscoDbContext))]
-    [Migration("20250715213610_PrimeraBD")]
-    partial class PrimeraBD
+    [Migration("20250725200654_FinalBD")]
+    partial class FinalBD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,13 @@ namespace KioscoAPI.Migrations
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("id_pago_fiado")
+                        .HasColumnType("int");
+
                     b.Property<int>("id_usuario")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("id_venta")
                         .HasColumnType("int");
 
                     b.Property<decimal>("monto")
@@ -52,7 +58,11 @@ namespace KioscoAPI.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("id_pago_fiado");
+
                     b.HasIndex("id_usuario");
+
+                    b.HasIndex("id_venta");
 
                     b.ToTable("CajaMovimientos");
                 });
@@ -92,6 +102,9 @@ namespace KioscoAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<int>("Usuarioid")
+                        .HasColumnType("int");
+
                     b.Property<bool>("activo")
                         .HasColumnType("bit");
 
@@ -111,6 +124,9 @@ namespace KioscoAPI.Migrations
                     b.Property<DateTime?>("fecha_baja")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("id_usuario")
+                        .HasColumnType("int");
+
                     b.Property<string>("nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -127,7 +143,80 @@ namespace KioscoAPI.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("Usuarioid");
+
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.Cuenta", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FechaCierre")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Observaciones")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Saldo")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("id_cliente")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_usuario")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("id_cliente")
+                        .IsUnique();
+
+                    b.HasIndex("id_usuario");
+
+                    b.ToTable("Cuentas");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.DetalleMovimientoInterno", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_movimientointerno")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_producto")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("preciocosto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("id_movimientointerno");
+
+                    b.HasIndex("id_producto");
+
+                    b.ToTable("DetalleMovimientoInterno");
                 });
 
             modelBuilder.Entity("KioscoAPI.Models.DetalleVenta", b =>
@@ -164,24 +253,28 @@ namespace KioscoAPI.Migrations
 
             modelBuilder.Entity("KioscoAPI.Models.MovimientoInterno", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Motivo")
+                    b.Property<int>("id_usuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("motivo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UsuarioResponsable")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("id");
 
-                    b.HasKey("Id");
+                    b.HasIndex("id_usuario");
 
                     b.ToTable("MovimientosInternos");
                 });
@@ -200,10 +293,16 @@ namespace KioscoAPI.Migrations
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("id_movimientointerno")
+                        .HasColumnType("int");
+
                     b.Property<int>("id_producto")
                         .HasColumnType("int");
 
                     b.Property<int>("id_usuario")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("id_venta")
                         .HasColumnType("int");
 
                     b.Property<string>("observacion")
@@ -216,9 +315,13 @@ namespace KioscoAPI.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("id_movimientointerno");
+
                     b.HasIndex("id_producto");
 
                     b.HasIndex("id_usuario");
+
+                    b.HasIndex("id_venta");
 
                     b.ToTable("MovimientosStock");
                 });
@@ -231,10 +334,16 @@ namespace KioscoAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<int?>("Cuentaid")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("fecha_pago")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("id_cliente")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_usuario")
                         .HasColumnType("int");
 
                     b.Property<int>("id_venta")
@@ -245,7 +354,11 @@ namespace KioscoAPI.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("Cuentaid");
+
                     b.HasIndex("id_cliente");
+
+                    b.HasIndex("id_usuario");
 
                     b.HasIndex("id_venta");
 
@@ -311,8 +424,8 @@ namespace KioscoAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("codigo_barra")
-                        .HasColumnType("int");
+                    b.Property<long>("codigo_barra")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("descripcion")
                         .IsRequired()
@@ -393,41 +506,38 @@ namespace KioscoAPI.Migrations
 
             modelBuilder.Entity("KioscoAPI.Models.Ticket", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Impuestos")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Items")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetodoPago")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NombreComercio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NumeroTransaccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("id_venta")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<decimal?>("impuestos")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("metodoPago")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("nombreComercio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("numeroTransaccion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("subtotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("id");
 
                     b.HasIndex("id_venta")
                         .IsUnique();
@@ -479,6 +589,9 @@ namespace KioscoAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<bool?>("ajustar_precio_al_pago")
+                        .HasColumnType("bit");
+
                     b.Property<string>("estado")
                         .HasColumnType("nvarchar(max)");
 
@@ -488,7 +601,10 @@ namespace KioscoAPI.Migrations
                     b.Property<DateTime?>("fecha_pago_pactado")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("id_cliente")
+                    b.Property<int>("id_cliente")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("id_cuenta")
                         .HasColumnType("int");
 
                     b.Property<int>("id_usuario")
@@ -511,6 +627,8 @@ namespace KioscoAPI.Migrations
 
                     b.HasIndex("id_cliente");
 
+                    b.HasIndex("id_cuenta");
+
                     b.HasIndex("id_usuario");
 
                     b.ToTable("Ventas");
@@ -518,13 +636,74 @@ namespace KioscoAPI.Migrations
 
             modelBuilder.Entity("KioscoAPI.Models.CajaMovimiento", b =>
                 {
-                    b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
+                    b.HasOne("KioscoAPI.Models.PagoFiado", "PagoFiado")
                         .WithMany("CajaMovimiento")
+                        .HasForeignKey("id_pago_fiado");
+
+                    b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
+                        .WithMany("CajaMovimientos")
                         .HasForeignKey("id_usuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioscoAPI.Models.Venta", "Venta")
+                        .WithMany("CajaMovimiento")
+                        .HasForeignKey("id_venta");
+
+                    b.Navigation("PagoFiado");
+
+                    b.Navigation("Usuario");
+
+                    b.Navigation("Venta");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.Cliente", b =>
+                {
+                    b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("Usuarioid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.Cuenta", b =>
+                {
+                    b.HasOne("KioscoAPI.Models.Cliente", "Cliente")
+                        .WithOne("Cuenta")
+                        .HasForeignKey("KioscoAPI.Models.Cuenta", "id_cliente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
+                        .WithMany("Cuentas")
+                        .HasForeignKey("id_usuario")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.DetalleMovimientoInterno", b =>
+                {
+                    b.HasOne("KioscoAPI.Models.MovimientoInterno", "MovimientoInterno")
+                        .WithMany("Detalles")
+                        .HasForeignKey("id_movimientointerno")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KioscoAPI.Models.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("id_producto")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MovimientoInterno");
+
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("KioscoAPI.Models.DetalleVenta", b =>
@@ -546,8 +725,23 @@ namespace KioscoAPI.Migrations
                     b.Navigation("Venta");
                 });
 
+            modelBuilder.Entity("KioscoAPI.Models.MovimientoInterno", b =>
+                {
+                    b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
+                        .WithMany("MovimientosInternos")
+                        .HasForeignKey("id_usuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("KioscoAPI.Models.MovimientoStock", b =>
                 {
+                    b.HasOne("KioscoAPI.Models.MovimientoInterno", "MovimientoInterno")
+                        .WithMany()
+                        .HasForeignKey("id_movimientointerno");
+
                     b.HasOne("KioscoAPI.Models.Producto", "Producto")
                         .WithMany("MovimientoStock")
                         .HasForeignKey("id_producto")
@@ -555,22 +749,40 @@ namespace KioscoAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
-                        .WithMany()
+                        .WithMany("MovimientosStock")
                         .HasForeignKey("id_usuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("KioscoAPI.Models.Venta", "Venta")
+                        .WithMany()
+                        .HasForeignKey("id_venta");
+
+                    b.Navigation("MovimientoInterno");
 
                     b.Navigation("Producto");
 
                     b.Navigation("Usuario");
+
+                    b.Navigation("Venta");
                 });
 
             modelBuilder.Entity("KioscoAPI.Models.PagoFiado", b =>
                 {
+                    b.HasOne("KioscoAPI.Models.Cuenta", null)
+                        .WithMany("Pagos")
+                        .HasForeignKey("Cuentaid");
+
                     b.HasOne("KioscoAPI.Models.Cliente", "Cliente")
                         .WithMany("PagosFiado")
                         .HasForeignKey("id_cliente")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("id_usuario")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KioscoAPI.Models.Venta", "Venta")
@@ -581,6 +793,8 @@ namespace KioscoAPI.Migrations
 
                     b.Navigation("Cliente");
 
+                    b.Navigation("Usuario");
+
                     b.Navigation("Venta");
                 });
 
@@ -589,7 +803,7 @@ namespace KioscoAPI.Migrations
                     b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
                         .WithMany("Permisos")
                         .HasForeignKey("id_usuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -656,15 +870,23 @@ namespace KioscoAPI.Migrations
                 {
                     b.HasOne("KioscoAPI.Models.Cliente", "Cliente")
                         .WithMany()
-                        .HasForeignKey("id_cliente");
+                        .HasForeignKey("id_cliente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KioscoAPI.Models.Cuenta", "Cuenta")
+                        .WithMany("VentasFiadas")
+                        .HasForeignKey("id_cuenta");
 
                     b.HasOne("KioscoAPI.Models.Usuario", "Usuario")
                         .WithMany("Ventas")
                         .HasForeignKey("id_usuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cliente");
+
+                    b.Navigation("Cuenta");
 
                     b.Navigation("Usuario");
                 });
@@ -676,7 +898,27 @@ namespace KioscoAPI.Migrations
 
             modelBuilder.Entity("KioscoAPI.Models.Cliente", b =>
                 {
+                    b.Navigation("Cuenta")
+                        .IsRequired();
+
                     b.Navigation("PagosFiado");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.Cuenta", b =>
+                {
+                    b.Navigation("Pagos");
+
+                    b.Navigation("VentasFiadas");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.MovimientoInterno", b =>
+                {
+                    b.Navigation("Detalles");
+                });
+
+            modelBuilder.Entity("KioscoAPI.Models.PagoFiado", b =>
+                {
+                    b.Navigation("CajaMovimiento");
                 });
 
             modelBuilder.Entity("KioscoAPI.Models.Producto", b =>
@@ -697,7 +939,13 @@ namespace KioscoAPI.Migrations
 
             modelBuilder.Entity("KioscoAPI.Models.Usuario", b =>
                 {
-                    b.Navigation("CajaMovimiento");
+                    b.Navigation("CajaMovimientos");
+
+                    b.Navigation("Cuentas");
+
+                    b.Navigation("MovimientosInternos");
+
+                    b.Navigation("MovimientosStock");
 
                     b.Navigation("Permisos");
 
@@ -706,6 +954,8 @@ namespace KioscoAPI.Migrations
 
             modelBuilder.Entity("KioscoAPI.Models.Venta", b =>
                 {
+                    b.Navigation("CajaMovimiento");
+
                     b.Navigation("DetalleVenta");
 
                     b.Navigation("PagosFiado");

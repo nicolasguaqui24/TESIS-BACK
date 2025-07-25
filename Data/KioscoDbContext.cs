@@ -96,7 +96,56 @@ namespace KioscoAPI.Data
 
             modelBuilder.Entity<Cuenta>()
               .Property(c => c.Saldo)
-             .HasPrecision(18, 2); 
+             .HasPrecision(18, 2);
+            // === VENTA - CUENTA: Relación N:1 explícita ===
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.Cuenta)
+                .WithMany(c => c.VentasFiadas)
+                .HasForeignKey(v => v.id_cuenta)
+            .IsRequired(false);
+            // Cuenta → Usuario
+            modelBuilder.Entity<Cuenta>()
+                .HasOne(c => c.Usuario)
+                .WithMany(u => u.Cuentas)
+                .HasForeignKey(c => c.id_usuario)
+                .OnDelete(DeleteBehavior.NoAction)
+;
+
+            // Permiso → Usuario
+            modelBuilder.Entity<Permiso>()
+                .HasOne(p => p.Usuario)
+                .WithMany(u => u.Permisos)
+                .HasForeignKey(p => p.id_usuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Venta → Usuario
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.Usuario)
+                .WithMany(u => u.Ventas)
+                .HasForeignKey(v => v.id_usuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // CajaMovimiento → Usuario
+            modelBuilder.Entity<CajaMovimiento>()
+                .HasOne(cm => cm.Usuario)
+                .WithMany(u => u.CajaMovimientos)
+                .HasForeignKey(cm => cm.id_usuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // MovimientoInterno → Usuario
+            modelBuilder.Entity<MovimientoInterno>()
+                .HasOne(mi => mi.Usuario)
+                .WithMany(u => u.MovimientosInternos)
+                .HasForeignKey(mi => mi.id_usuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // MovimientoStock → Usuario (si aplica)
+            modelBuilder.Entity<MovimientoStock>()
+                .HasOne(ms => ms.Usuario)
+                .WithMany(u => u.MovimientosStock)
+                .HasForeignKey(ms => ms.id_usuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
 
     }

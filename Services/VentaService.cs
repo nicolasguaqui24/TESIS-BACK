@@ -21,28 +21,32 @@ public class VentaService : IVentaService
         _repository = repository;
     }
 
-    public async Task<Venta> CrearVentaDesdeDTOAsync(VentaDTO dto)
+    public async Task<Venta> CrearVentaDesdeDTOAsync(VentaDTO dto)  
     {
+        if (dto.Detalles == null || !dto.Detalles.Any())
+            throw new ArgumentException("La venta debe contener al menos un detalle.");
+        var detalles = dto.Detalles.Select(d => new DetalleVenta
+        {
+            id_producto = d.IdProducto,
+            cantidad = d.Cantidad,
+            precio_unitario = d.PrecioUnitario,
+            subtotal = d.Cantidad * d.PrecioUnitario
+        }).ToList();
+
         var venta = new Venta
         {
             fecha = dto.Fecha != default(DateTime) ? dto.Fecha : DateTime.Now,
             tipo_venta = dto.TipoVenta,
-            total = dto.Total,
-            saldo_pendiente = dto.SaldoPendiente,
+            total = detalles.Sum(d => d.subtotal),
             fecha_pago_pactado = dto.FechaPagoPactado,
             observaciones = dto.Observaciones,
-            id_cliente = dto.IdCliente,
-            id_usuario = dto.IdUsuario,
-            id_cuenta = dto.IdCuenta,
+            id_cliente = dto.id_cliente,
+            id_usuario = dto.id_usuario,
+            id_cuenta = dto.id_cuenta,
             estado = "Pendiente",
-            DetalleVenta = dto.Detalles.Select(d => new DetalleVenta
-            {
-                id_producto = d.IdProducto,
-                cantidad = d.Cantidad,
-                precio_unitario = d.PrecioUnitario
-            }).ToList()
+      
         };
-
+        venta.DetalleVenta = detalles;
         return await _repository.CrearVentaAsync(venta);
     }
 }

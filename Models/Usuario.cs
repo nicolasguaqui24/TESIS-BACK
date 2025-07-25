@@ -21,8 +21,14 @@ namespace KioscoAPI.Models
         public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
          
         //Navegacion para caja
-        public ICollection<CajaMovimiento> CajaMovimiento { get; set; } = new List<CajaMovimiento>();
-        
+        public ICollection<CajaMovimiento> CajaMovimientos { get; set; } = new List<CajaMovimiento>();
+        public ICollection<Cuenta> Cuentas{ get; set; } = new List<Cuenta>();
+
+        public ICollection<MovimientoInterno> MovimientosInternos { get; set; } = new List<MovimientoInterno>();
+        public ICollection<MovimientoStock> MovimientosStock { get; set; } = new List<MovimientoStock>();
+
+
+
 
     }
 }
